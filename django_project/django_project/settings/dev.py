@@ -22,10 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 查看导包路径
 import sys
+
 print(sys.path)
 
 # 为了简化注册，追加导包路径
-sys.path.insert(0,os.path.join(BASE_DIR,'apps'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -37,7 +38,6 @@ SECRET_KEY = 'django-insecure-^@4xw*ub07!5)%p@b@8)jqkdanwc2*tp5$(h+#o8xa51*9=&$v
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -52,7 +52,11 @@ INSTALLED_APPS = [
     # 原始复杂版
     # 'django_project.apps.users',  # 用户模块
     # 简化版本
-    'users',  # 用户模块
+    # 只有当子应用要渲染模板或者数据库迁移时才必须要注册，否则的话可以不注册
+    'users',  # 用户模块,
+    'contents',  # 首页
+    'verifications',  # 验证
+    'oauth',  # 第三方登录
 ]
 
 MIDDLEWARE = [
@@ -70,7 +74,7 @@ ROOT_URLCONF = 'django_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.jinja2.Jinja2',  # 修改为jinja2 模板引擎
-        'DIRS': [os.path.join(BASE_DIR,'templates')],         # 配置模板文件路径
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # 配置模板文件路径
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,7 +86,7 @@ TEMPLATES = [
             'environment': 'django_project.utils.jinja2_env.jinja2_environment'
         },
     },
-{
+    {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
@@ -100,32 +104,39 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '192.168.127.128', # 数据库主机
-        'PORT': 3306, # 数据库端口
-        'USER': 'root', # 数据库用户名
-        'PASSWORD': '123456', # 数据库用户密码
-        'NAME': 'django_project' # 数据库名字
+        # 'HOST': '192.168.127.128', # 数据库主机
+        'HOST': '127.0.0.1',  # 数据库主机
+        'PORT': 3306,  # 数据库端口
+        'USER': 'root',  # 数据库用户名
+        'PASSWORD': 'Passw0rd',  # 数据库用户密码
+        'NAME': 'django_project'  # 数据库名字
     }
 }
 # 配置redis
 CACHES = {
-    "default": { # 默认
+    "default": {  # 默认
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
-    "session": { # session
+    "session": {  # session
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    "verify": {  # 验证码
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -152,20 +163,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -221,3 +230,22 @@ LOGGING = {
         },
     }
 }
+
+# 指定自定义用户模型类  从django.config.global_settings找到
+AUTH_USER_MODEL = 'users.User'
+
+# 指定自定义用户后端
+AUTHENTICATION_BACKENDS = ['users.utils.UsernameMobileBackends']
+
+# 判断用户是否登录，如果未登录指定重定向到登录页
+LOGIN_URL = '/login/'
+
+# QQ登录的配置参数
+QQ_CLIENT_ID = '101518219'
+QQ_CLIENT_SECRET = '418d84ebdc7241efb79536886ae95224'
+QQ_REDIRECT_URI = 'http://www.meiduo.site/oauth_callback'
+
+# Gitee登录的配置参数
+GITEE_CLIENT_ID = '5c961b100489f5c87ec9a7f9362ab3b134e62dc146095aa35e5a8b076dababe9'
+GITEE_REDIRECT_URI = 'http://127.0.0.1:8000/oauth_callback'
+GITEE_CLIENT_SECRET = 'a86ac188d67fd034304fb1420d37e10d0623cd88187c2300bd964f43fb150de9'
