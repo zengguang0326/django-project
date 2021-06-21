@@ -249,3 +249,14 @@ QQ_REDIRECT_URI = 'http://www.meiduo.site/oauth_callback'
 GITEE_CLIENT_ID = '5c961b100489f5c87ec9a7f9362ab3b134e62dc146095aa35e5a8b076dababe9'
 GITEE_REDIRECT_URI = 'http://127.0.0.1:8000/oauth_callback'
 GITEE_CLIENT_SECRET = 'a86ac188d67fd034304fb1420d37e10d0623cd88187c2300bd964f43fb150de9'
+
+# 邮件参数
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # 导入邮件模块
+EMAIL_HOST = 'smtp.yeah.net' # 发邮件主机
+EMAIL_PORT = 25 # 发邮件端口
+EMAIL_HOST_USER = 'zengguang_test@yeah.net' # 授权的邮箱
+EMAIL_HOST_PASSWORD = 'NJVFXMNMJFDYWGLB' # 邮箱授权时获得的密码，非注册登录密码
+EMAIL_FROM = 'zengguang_test@yeah.net' # 发件人抬头
+
+# 邮箱验证链接
+EMAIL_VERIFY_URL = 'http://127.0.0.1:8000/emails/verification/'

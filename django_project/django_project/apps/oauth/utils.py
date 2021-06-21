@@ -8,7 +8,7 @@
 import itsdangerous
 from django.conf import settings
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-# from .constants import ACCESS_TOKEN_EXPIRES
+from .constants import ACCESS_TOKEN_EXPIRES
 
 
 # 对openID进行加密以及解密
@@ -19,8 +19,8 @@ def generate_access_token(openid):
     :return: access_token
     """
     # serializer = Serializer(秘钥, 有效期秒)
-    # serializer = Serializer(settings.SECRET_KEY, expires_in=ACCESS_TOKEN_EXPIRES)
-    serializer = Serializer('121', expires_in=111)
+    serializer = Serializer(settings.SECRET_KEY, expires_in=ACCESS_TOKEN_EXPIRES)
+    # serializer = Serializer('121', expires_in=111)
     data = {"openid":openid}
     access_token = serializer.dumps(data)
     # 生成的access_token为bytes类型
@@ -36,8 +36,8 @@ def check_access_token(access_token):
     :return: 用户的openid
     """
     # serializer = Serializer(秘钥, 有效期秒)
-    # serializer = Serializer(settings.SECRET_KEY, expires_in=ACCESS_TOKEN_EXPIRES)
-    serializer = Serializer('121', expires_in=111)
+    serializer = Serializer(settings.SECRET_KEY, expires_in=ACCESS_TOKEN_EXPIRES)
+    # serializer = Serializer('121', expires_in=111)
     try:
         s = serializer.loads(access_token)
     except itsdangerous.BadData:
